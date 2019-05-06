@@ -34,9 +34,12 @@ def pi_iterative_sparse(Pss, d, z, alpha):
     pn = np.ones((n, 1))/n
     e = np.ones((n, 1))
 
+    M1 = alpha*Pss_prime
+    M2 = np.transpose(np.dot(d+(1-alpha)*(e-d), z))
+
     while True:
         p = pn
-        pn = alpha*np.dot(Pss_prime, p) +np.dot(np.dot(d+(1-alpha)*(e-d), z), p)
+        pn = np.dot(M1, p) +np.dot(M2, p)
 
         if norm(pn-p, np.inf) < eps:
             break
