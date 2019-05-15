@@ -71,7 +71,6 @@ def pi_iterative_sparse(Pss, d, z, alpha):
         
         return s
 
-    
 if __name__=='__main__':
     Adj = create_Adj(10)
     print(google(Adj))
