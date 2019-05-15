@@ -59,17 +59,16 @@ def pi_iterative_sparse(Pss, d, z, alpha):
     return pn
     
 
-    def ergodique_markov(P):
+def ergodique_markov(P):
+    s = 0.
+    pi = pi_iterative_sparse()
+    for i in range(n):
+        s += pi[i]*r(i)
+    
+    return s
 
-        def r(x):
-            return x**2
-        
-        s = 0.
-        pi = pi_iterative_sparse()
-        for i in range(n):
-            s += pi[i]*r(i)
-        
-        return s
+def solve_linear_system(P):
+    return np.linalg.solve(P-np.identity((n, n)), np.zeros((n,1)))
 
 if __name__=='__main__':
     Adj = create_Adj(10)
