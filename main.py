@@ -85,7 +85,7 @@ def ergodique_markov_T(T, P):
             s1 += r(k)*s2
         s0 += s1
 
-    return s0
+    return s0/T
 
 
 if __name__=='__main__':
@@ -93,3 +93,4 @@ if __name__=='__main__':
     print(google(Adj))
     P, Pss, Pprim, d, z, alpha = google(Adj)
     print(pi_iterative(Pprim))
+    print(ergodique_markov_T(1000, P))
