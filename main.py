@@ -32,7 +32,8 @@ def pi_iterative(P_prime):
     pn = np.ones((n, 1))/n
 
     while True:
-        p, pn = pn, np.dot(P_prime, p)
+        p = pn
+        pn = np.dot(P_prime, p)
 
         if norm(pn-p, np.inf) < eps:
             break
@@ -50,7 +51,7 @@ def pi_iterative_sparse(Pss, d, z, alpha):
 
     while True:
         p = pn
-        pn = np.dot(M1, p) +np.dot(M2, p)
+        pn = np.dot(M1, p) + np.dot(M2, p)
 
         if norm(pn-p, np.inf) < eps:
             break
@@ -58,5 +59,7 @@ def pi_iterative_sparse(Pss, d, z, alpha):
     return pn
 
 if __name__=='__main__':
-    Adj = create_Adj(3)
+    Adj = create_Adj(10)
     print(google(Adj))
+    P, Pss, Pprim, d, z, alpha = google(Adj)
+    print(pi_iterative(Pprim))
