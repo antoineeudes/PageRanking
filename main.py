@@ -69,12 +69,22 @@ def ergodique_markov(P):
         s += pi[i]*r(i)
     return s
 
-def ergodique_markov(P):
-    s = 0.
-    pi = pi_iterative_sparse()
-    for i in range(n):
-        s += pi[i]*r(i)
-    return s
+def ergodique_markov_T(T, P):
+    n, _ = P.shape
+
+    P_pow = np.eye(n)
+    s0 = 0
+    for t in range(T):
+        P_pow = np.dot(P_pow, P)
+        s1 = 0
+        for k in range(n):
+            s2 = 0
+            for i in range(n):
+                s2 += P_pow[i, k]
+            s1 += r(k)*s2
+        s0 += s1
+
+    return s0/T
 
 def solve_linear_system(P):
     return np.linalg.solve(P-np.identity((n, n)), np.zeros((n,1)))
@@ -84,3 +94,4 @@ if __name__=='__main__':
     print(google(Adj))
     P, Pss, Pprim, d, z, alpha = google(Adj)
     print(pi_iterative(Pprim))
+    print(ergodique_markov_T(1000, P))
