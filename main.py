@@ -59,6 +59,9 @@ def pi_iterative_sparse(Pss, d, z, alpha):
     return pn
 
 
+def r(x):
+    return x**2
+
 def ergodique_markov(P):
     s = 0.
     pi = pi_iterative_sparse()
@@ -66,9 +69,6 @@ def ergodique_markov(P):
         s += pi[i]*r(i)
 
     return s
-
-def r(x):
-    return x**2
 
 def ergodique_markov_T(T, P):
     n, _ = P.shape
