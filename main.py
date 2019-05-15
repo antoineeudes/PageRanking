@@ -57,7 +57,21 @@ def pi_iterative_sparse(Pss, d, z, alpha):
             break
 
     return pn
+    
 
+    def ergodique_markov(P):
+
+        def r(x):
+            return x**2
+        
+        s = 0.
+        pi = pi_iterative_sparse()
+        for i in range(n):
+            s += pi[i]*r(i)
+        
+        return s
+
+    
 if __name__=='__main__':
     Adj = create_Adj(10)
     print(google(Adj))
