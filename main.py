@@ -4,12 +4,14 @@ from numpy.linalg import norm
 eps = 0.001
 
 def create_Adj(w):
-    return np.ones((w,w)) - np.identity(w)
+    Adj = np.ones((w,w)) - np.identity(w)
+    Adj[-1,-2] = 0
+    return Adj
 
 def google(Adj):
     w, h = Adj.shape
 
-    # Choix de paramètres
+    # Choix de parametres
     z = np.ones((1, h))/w
     alpha = 0.1
     e = np.ones((w,1))
