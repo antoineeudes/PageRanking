@@ -57,14 +57,23 @@ def pi_iterative_sparse(Pss, d, z, alpha):
             break
 
     return pn
-    
+
+
+def r(x):
+    return x**2
 
 def ergodique_markov(P):
     s = 0.
     pi = pi_iterative_sparse()
     for i in range(n):
         s += pi[i]*r(i)
-    
+    return s
+
+def ergodique_markov(P):
+    s = 0.
+    pi = pi_iterative_sparse()
+    for i in range(n):
+        s += pi[i]*r(i)
     return s
 
 def solve_linear_system(P):
