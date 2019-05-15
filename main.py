@@ -71,6 +71,27 @@ def pi_iterative_sparse(Pss, d, z, alpha):
         
         return s
 
+def r(x):
+    return x**2
+
+def ergodique_markov_T(T, P):
+    n, _ = P.shape
+
+    P_pow = np.eye(n)
+    s0 = 0
+    for t in range(T):
+        P_pow = np.dot(P_pow, P)
+        s1 = 0
+        for k in range(n):
+            s2 = 0
+            for i in range(n):
+                s2 += P_pow[i, k]
+            s1 += r(k)*s2
+        s0 += s1
+
+    return s0
+
+
 if __name__=='__main__':
     Adj = create_Adj(10)
     print(google(Adj))
