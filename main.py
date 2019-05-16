@@ -83,7 +83,7 @@ def trajectory(P, T):
 
     X[0] = np.random.randint(n)
     for t in range(1, T):
-        dist = P[:, int(X[t-1])] # Probas de se déplacer dans un autre état
+        dist = P[int(X[t-1]), :] # Probas de se déplacer dans un autre état
         for k in range(len(dist)): # Simule un déplacement
             u = np.random.rand()
             if u < dist[k]:
@@ -134,4 +134,4 @@ if __name__=='__main__':
     print(solve_linear_system(P))
     print(trajectory(P, 100))
     print(ergodique_markov_T(5000, P))
-    print(ergodique_markov_T_monte_carlo(1000, P, 1000))
+    print(ergodique_markov_T_monte_carlo(100, P, 1000))
