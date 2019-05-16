@@ -134,4 +134,4 @@ if __name__=='__main__':
     print(solve_linear_system(P))
     print(trajectory(P, 100))
     print(ergodique_markov_T(5000, P))
-    print(ergodique_markov_T_monte_carlo(1000, P, 1000))
+    print(ergodique_markov_T_monte_carlo(100, P, 1000))
