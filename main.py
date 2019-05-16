@@ -69,6 +69,23 @@ def ergodique_markov(P):
         s += pi[i]*r(i)
     return s
 
+def trajectory(P, T):
+    n, _ = P.shape
+    X = np.zeros(T)
+    X.astype(int)
+
+    X[0] = np.random.randint(n)
+    for t in range(1, T):
+        dist = P[:, int(X[t-1])] # Probas de se déplacer dans un autre état
+        for k in range(len(dist)): # Simule un déplacement
+            u = np.random.rand()
+            if u < dist[k]:
+                X[t] = k
+                break
+
+    return X
+
+
 def ergodique_markov_T(T, P):
     n, _ = P.shape
 
@@ -80,7 +97,7 @@ def ergodique_markov_T(T, P):
         for k in range(n):
             s2 = 0
             for i in range(n):
-                s2 += P_pow[i, k]
+                s2 += P_pow[k, i]
             s1 += r(k)*s2
         s0 += s1
 
@@ -94,4 +111,6 @@ if __name__=='__main__':
     print(google(Adj))
     P, Pss, Pprim, d, z, alpha = google(Adj)
     print(pi_iterative(Pprim))
-    print(ergodique_markov_T(1000, P))
+    print(ergodique_markov_T(5000, P))
+
+    print(trajectory(P, 100))
