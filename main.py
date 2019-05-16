@@ -66,6 +66,8 @@ def pi_iterative_sparse(Pss, d, z, alpha):
 def r(x):
     return x**2
 
+r_vect = np.vectorize(r)
+
 def ergodique_markov(P):
     s = 0.
     pi = pi_iterative(P.T)
@@ -73,6 +75,23 @@ def ergodique_markov(P):
     for i in range(n):
         s += pi[i]*r(i)
     return s
+
+def trajectory(P, T):
+    n, _ = P.shape
+    X = np.zeros(T)
+    X.astype(int)
+
+    X[0] = np.random.randint(n)
+    for t in range(1, T):
+        dist = P[:, int(X[t-1])] # Probas de se déplacer dans un autre état
+        for k in range(len(dist)): # Simule un déplacement
+            u = np.random.rand()
+            if u < dist[k]:
+                X[t] = k
+                break
+
+    return X
+
 
 def ergodique_markov_T(T, P):
     n, _ = P.shape
@@ -84,12 +103,21 @@ def ergodique_markov_T(T, P):
         for k in range(n):
             s2 = 0
             for i in range(n):
-                s2 += P_pow[i, k]
+                s2 += P_pow[k, i]
             s1 += r(k)*s2
         s0 += s1
 
     return s0/T
 
+def ergodique_markov_T_monte_carlo(T, P, N):
+    means = []
+    for k in range(N):
+        if k % (N/10) == 0:
+            print('Trajectory {}'.format(k))
+        X = trajectory(P, T) # Simulate a trajectory
+        means.append(np.mean(X))
+
+    return np.mean(means)
 
 
 def solve_linear_system(P):
@@ -104,3 +132,6 @@ if __name__=='__main__':
     print(ergodique_markov_T(1000, P))
     print(ergodique_markov(P))
     print(solve_linear_system(P))
+    print(trajectory(P, 100))
+    print(ergodique_markov_T(5000, P))
+    print(ergodique_markov_T_monte_carlo(1000, P, 1000))
