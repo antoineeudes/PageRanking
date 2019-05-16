@@ -62,6 +62,8 @@ def pi_iterative_sparse(Pss, d, z, alpha):
 def r(x):
     return x**2
 
+r_vect = np.vectorize(r)
+
 def ergodique_markov(P):
     s = 0.
     pi = pi_iterative_sparse()
@@ -103,6 +105,17 @@ def ergodique_markov_T(T, P):
 
     return s0/T
 
+def ergodique_markov_T_monte_carlo(T, P, N):
+    means = []
+    for k in range(N):
+        if k % (N/10) == 0:
+            print('Trajectory {}'.format(k))
+        X = trajectory(P, T) # Simulate a trajectory
+        means.append(np.mean(X))
+
+    return np.mean(means)
+
+
 def solve_linear_system(P):
     return np.linalg.solve(P-np.identity((n, n)), np.zeros((n,1)))
 
@@ -111,6 +124,6 @@ if __name__=='__main__':
     print(google(Adj))
     P, Pss, Pprim, d, z, alpha = google(Adj)
     print(pi_iterative(Pprim))
-    print(ergodique_markov_T(5000, P))
-
     print(trajectory(P, 100))
+    print(ergodique_markov_T(5000, P))
+    print(ergodique_markov_T_monte_carlo(1000, P, 1000))
