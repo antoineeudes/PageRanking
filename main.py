@@ -41,12 +41,6 @@ Adj = create_Adj(10)
 P, Pss, Pprim, d, z, alpha = google(Adj)
 
 
-def getRankWithEigenValues(P):
-    n, _ = P.shape
-    pi = np.zeros(n)
-    A =
-    pi[:-1] =
-
 def pi_iterative(P_prime):
     m, n = P_prime.shape
     pn = np.ones((n, 1))/n
@@ -122,8 +116,8 @@ r_vect = np.vectorize(r)
 
 def pageRank(P):
     eigen, M = np.linalg.eig(P)
-
-    print(eigen)
+    n, _ = P.shape
+    return M.T[0]/np.sum(M.T[0])
 
 def ergodique_markov(P):
     s = 0.
@@ -186,13 +180,13 @@ def solve_linear_system(P):
 
 
 if __name__=='__main__':
-    print(google(Adj))
-    print(pi_iterative(Pprim))
-    print(ergodique_markov_T(1000, P))
-    print(ergodique_markov(P))
-    print(solve_linear_system(P))
+    # print(google(Adj))
+    # print(pi_iterative(Pprim))
+    # print(ergodique_markov_T(1000, P))
+    # print(ergodique_markov(P))
+    # print(solve_linear_system(P))
     # print(trajectory(P, 100))
-    print(ergodique_markov_T(100, P, 1000))
+    # print(ergodique_markov_T(100, P, 1000))
     # print(optimizePageRank(10))
-    pageRank(P)
-    print(optimizePageRank(10))
+    print(pageRank(P))
+    # print(optimizePageRank(10))
