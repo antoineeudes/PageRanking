@@ -107,6 +107,11 @@ def r(x):
 
 r_vect = np.vectorize(r)
 
+def pageRank(P):
+    eigen, M = np.linalg.eig(P)
+
+    print(eigen)
+
 def ergodique_markov(P):
     s = 0.
     pi = pi_iterative_sparse(Pss, d, z, alpha)
@@ -175,4 +180,5 @@ if __name__=='__main__':
     # print(solve_linear_system(P))
     # print(trajectory(P, 100))
     print(ergodique_markov_T(100, P, 1000))
-    print(optimizePageRank(10))
+    # print(optimizePageRank(10))
+    pageRank(P)
