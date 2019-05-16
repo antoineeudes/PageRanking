@@ -6,15 +6,15 @@ eps = 0.001
 
 def create_Adj(w):
     Adj = np.ones((w,w)) - np.identity(w)
-    Adj[-1,3] = 0
-    Adj[-1,-2] = 0
-    Adj[-5,-6] = 0
-    Adj[-2,-3] = 0
-    Adj[-2,-1] = 0
-    Adj[-2,0] = 0
-    Adj[1,0] = 0
-    Adj[5:, 0] = 0
-    Adj[5:, 1] = 0
+    # Adj[-1,3] = 0
+    # Adj[-1,-2] = 0
+    # Adj[-5,-6] = 0
+    # Adj[-2,-3] = 0
+    # Adj[-2,-1] = 0
+    # Adj[-2,0] = 0
+    # Adj[1,0] = 0
+    # Adj[5:, 0] = 0
+    # Adj[5:, 1] = 0
 
     return Adj
 
@@ -117,7 +117,8 @@ r_vect = np.vectorize(r)
 def pageRank(P):
     eigen, M = np.linalg.eig(P.T)
     n, _ = P.shape
-    return M.T[0]/np.sum(M.T[0])
+    eigenvector = M[:, abs(eigen-1)<0.001]
+    return eigenvector/np.sum(eigenvector)
 
 def ergodique_markov(P):
     s = 0.
