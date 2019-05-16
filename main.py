@@ -44,8 +44,8 @@ P, Pss, Pprim, d, z, alpha = google(Adj)
 def getRankWithEigenValues(P):
     n, _ = P.shape
     pi = np.zeros(n)
-    A = 
-    pi[:-1] = 
+    A =
+    pi[:-1] =
 
 def pi_iterative(P_prime):
     m, n = P_prime.shape
@@ -120,6 +120,10 @@ def r(x):
 
 r_vect = np.vectorize(r)
 
+def pageRank(P):
+    eigen, M = np.linalg.eig(P)
+
+    print(eigen)
 
 def ergodique_markov(P):
     s = 0.
@@ -188,6 +192,7 @@ if __name__=='__main__':
     print(ergodique_markov(P))
     print(solve_linear_system(P))
     # print(trajectory(P, 100))
-    # print(ergodique_markov_T(5000, P))
-    # print(ergodique_markov_T_monte_carlo(100, P, 1000))
+    print(ergodique_markov_T(100, P, 1000))
+    # print(optimizePageRank(10))
+    pageRank(P)
     print(optimizePageRank(10))
