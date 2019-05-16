@@ -3,6 +3,7 @@ from numpy.linalg import norm
 
 eps = 0.001
 
+
 def create_Adj(w):
     Adj = np.ones((w,w)) - np.identity(w)
     Adj[-1,-2] = 0
@@ -26,6 +27,9 @@ def google(Adj):
     P = alpha*Pss + np.dot(d,z) + (1-alpha)*np.dot((e-d), z)
     Pprim = P.T
     return P, Pss, Pprim, d, z, alpha
+
+Adj = create_Adj(10)
+P, Pss, Pprim, d, z, alpha = google(Adj)
 
 def pi_iterative(P_prime):
     m, n = P_prime.shape
@@ -64,14 +68,14 @@ def r(x):
 
 def ergodique_markov(P):
     s = 0.
-    pi = pi_iterative_sparse()
+    pi = pi_iterative(P.T)
+    n, _ = P.shape
     for i in range(n):
         s += pi[i]*r(i)
     return s
 
 def ergodique_markov_T(T, P):
     n, _ = P.shape
-
     P_pow = np.eye(n)
     s0 = 0
     for t in range(T):
@@ -86,12 +90,17 @@ def ergodique_markov_T(T, P):
 
     return s0/T
 
+
+
 def solve_linear_system(P):
-    return np.linalg.solve(P-np.identity((n, n)), np.zeros((n,1)))
+    n, _ = P.shape
+    A = P[:-1, :-1]-np.identity(n-1)
+    b = -P[:-1,-1]
+    return np.linalg.solve(A, b)
 
 if __name__=='__main__':
-    Adj = create_Adj(10)
     print(google(Adj))
-    P, Pss, Pprim, d, z, alpha = google(Adj)
     print(pi_iterative(Pprim))
     print(ergodique_markov_T(1000, P))
+    print(ergodique_markov(P))
+    print(solve_linear_system(P))
