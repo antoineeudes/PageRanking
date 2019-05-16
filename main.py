@@ -7,6 +7,7 @@ eps = 0.001
 def create_Adj(w):
     Adj = np.ones((w,w)) - np.identity(w)
     Adj[-1,-2] = 0
+    print(Adj)
     return Adj
 
 def google(Adj):
@@ -63,6 +64,45 @@ def pi_iterative_sparse(Pss, d, z, alpha):
 
     return pn
 
+def binary_encoding(integer, digits):
+    encoded = bin(integer)[2:]
+    while len(encoded)<digits:
+        encoded = '0' + encoded
+    return encoded
+
+def create_candidate_matrix(binary_integer):
+    return np.array([int(s) for s in binary_integer])
+
+def get_candidate_matrices(nb_rows, nb_columns):
+    nb_candidates = 2**(nb_rows*nb_columns)
+    candidate_matrices = np.zeros((nb_candidates, nb_rows, nb_columns))
+    digits = nb_rows*nb_columns
+    for i in range(nb_candidates):
+        candidate_matrices[i, :, :] = create_candidate_matrix(binary_encoding(i, digits)).reshape((nb_rows, nb_columns))
+    return candidate_matrices
+
+def optimizePageRank(n, p=2, m=None):
+    if m==None:
+        m = n//2
+    Adj = create_Adj(n)
+    Adj[0:p, m+1:] = 0
+    candidate_matrices = get_candidate_matrices(p, n-1-m)
+    optimal_matrice = np.zeros((p, n-m))
+    optimal_score = -float('inf')
+    for matrice in candidate_matrices:
+        print(matrice)
+        Adj[0:2, m+1:] = matrice
+        print(Adj)
+        P, Pss, Pprim, d, z, alpha = google(Adj)
+        print(P)
+        pi = pi_iterative(P.T)
+        print("pi ok")
+        score = np.sum([pi[i] for i in range(m)])
+        if optimal_score<score:
+            optimal_score = score
+            optimal_matrice = matrice
+    Adj[0:2, m+1:] = optimal_matrice
+    return Adj
 
 def r(x):
     return x**2
@@ -73,7 +113,6 @@ def ergodique_markov(P):
     s = 0.
     pi = pi_iterative_sparse(Pss, d, z, alpha)
     n, _ = P.shape
-    # s = np.sum(pi*r_vect(list(range(n))))
     for i in range(n):
         s += pi[i]*r(i)
     return s
@@ -92,7 +131,6 @@ def trajectory(P, T):
             if u < dist_cum[k]:
                 X[t] = k
                 break
-
     return X
 
 
@@ -129,12 +167,15 @@ def solve_linear_system(P):
     b = -P[:-1,-1]
     return np.linalg.solve(A, b)
 
+
+
 if __name__=='__main__':
-    # print(google(Adj))
-    # print(pi_iterative(Pprim))
-    # print(ergodique_markov_T(1000, P))
+    print(google(Adj))
+    print(pi_iterative(Pprim))
+    print(ergodique_markov_T(1000, P))
     print(ergodique_markov(P))
-    # print(solve_linear_system(P))
+    print(solve_linear_system(P))
     # print(trajectory(P, 100))
     # print(ergodique_markov_T(5000, P))
-    print(ergodique_markov_T_monte_carlo(100, P, 1000))
+    # print(ergodique_markov_T_monte_carlo(100, P, 1000))
+    print(optimizePageRank(10))
