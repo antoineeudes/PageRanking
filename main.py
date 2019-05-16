@@ -115,7 +115,7 @@ def r(x):
 r_vect = np.vectorize(r)
 
 def pageRank(P):
-    eigen, M = np.linalg.eig(P)
+    eigen, M = np.linalg.eig(P.T)
     n, _ = P.shape
     return M.T[0]/np.sum(M.T[0])
 
