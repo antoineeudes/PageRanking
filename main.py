@@ -90,13 +90,9 @@ def optimizePageRank(n, p=2, m=None):
     optimal_matrice = np.zeros((p, n-m))
     optimal_score = -float('inf')
     for matrice in candidate_matrices:
-        print(matrice)
         Adj[0:2, m+1:] = matrice
-        print(Adj)
         P, Pss, Pprim, d, z, alpha = google(Adj)
-        print(P)
         pi = pi_iterative(P.T)
-        print("pi ok")
         score = np.sum([pi[i] for i in range(m)])
         if optimal_score<score:
             optimal_score = score
