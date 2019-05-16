@@ -6,8 +6,16 @@ eps = 0.001
 
 def create_Adj(w):
     Adj = np.ones((w,w)) - np.identity(w)
+    Adj[-1,3] = 0
     Adj[-1,-2] = 0
-    print(Adj)
+    Adj[-5,-6] = 0
+    Adj[-2,-3] = 0
+    Adj[-2,-1] = 0
+    Adj[-2,0] = 0
+    Adj[1,0] = 0
+    Adj[5:, 0] = 0
+    Adj[5:, 1] = 0
+
     return Adj
 
 def google(Adj):
@@ -34,9 +42,7 @@ P, Pss, Pprim, d, z, alpha = google(Adj)
 
 def pi_iterative(P_prime):
     m, n = P_prime.shape
-    pn = np.zeros((n, 1))
-    pn[0] = 1
-    # pn = np.ones((n, 1))/n
+    pn = np.ones((n, 1))/n
 
     while True:
         p = pn
@@ -125,7 +131,7 @@ def trajectory(P, T):
     X = np.zeros(T)
     X.astype(int)
 
-    X[0] = np.random.randint(n) # Point de depart pris uniformement
+    X[0] = np.random.randint(n)
     for t in range(1, T):
         dist = P[int(X[t-1]), :] # Probas de se déplacer dans un autre état
         u = np.random.rand()
@@ -137,23 +143,23 @@ def trajectory(P, T):
     return X
 
 
-# def ergodique_markov_T(T, P):
-#     n, _ = P.shape
-#     P_pow = np.eye(n)
-#     s0 = 0
-#     for t in range(T):
-#         P_pow = np.dot(P_pow, P)
-#         s1 = 0
-#         for k in range(n):
-#             s2 = 0
-#             for i in range(n):
-#                 s2 += P_pow[k, i]
-#             s1 += r(k)*s2
-#         s0 += s1
-#
-#     return s0/T
+def ergodique_markov_T(T, P):
+    n, _ = P.shape
+    P_pow = np.eye(n)
+    s0 = 0
+    for t in range(T):
+        P_pow = np.dot(P_pow, P)
+        s1 = 0
+        for k in range(n):
+            s2 = 0
+            for i in range(n):
+                s2 += P_pow[k, i]
+            s1 += r(k)*s2
+        s0 += s1
 
-def ergodique_markov_T(T, P, N=1000):
+    return s0/T
+
+def ergodique_markov_T_monte_carlo(T, P, N):
     means = []
     for k in range(N):
         if k % (N/10) == 0:
@@ -174,11 +180,12 @@ def solve_linear_system(P):
 
 if __name__=='__main__':
     print(google(Adj))
-    # print(pi_iterative(Pprim))
-    # print(pi_iterative_sparse(Pss, d, z, alpha))
+    print(pi_iterative(Pprim))
+    print(ergodique_markov_T(1000, P))
     print(ergodique_markov(P))
-    # print(solve_linear_system(P))
+    print(solve_linear_system(P))
     # print(trajectory(P, 100))
     print(ergodique_markov_T(100, P, 1000))
     # print(optimizePageRank(10))
     pageRank(P)
+    print(optimizePageRank(10))
