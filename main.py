@@ -40,6 +40,13 @@ def google(Adj):
 Adj = create_Adj(10)
 P, Pss, Pprim, d, z, alpha = google(Adj)
 
+
+def getRankWithEigenValues(P):
+    n, _ = P.shape
+    pi = np.zeros(n)
+    A = 
+    pi[:-1] = 
+
 def pi_iterative(P_prime):
     m, n = P_prime.shape
     pn = np.ones((n, 1))/n
@@ -112,6 +119,7 @@ def r(x):
     return x**2
 
 r_vect = np.vectorize(r)
+
 
 def ergodique_markov(P):
     s = 0.
