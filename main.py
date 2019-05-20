@@ -1,20 +1,24 @@
 import numpy as np
 from numpy.linalg import norm
+from itertools import product
+import networkx as nx
+from matplotlib import pyplot as plt
 
 eps = 0.001
 
 
 def create_Adj(w):
-    Adj = np.ones((w,w)) - np.identity(w)
-    # Adj[-1,3] = 0
-    # Adj[-1,-2] = 0
-    # Adj[-5,-6] = 0
-    # Adj[-2,-3] = 0
-    # Adj[-2,-1] = 0
-    # Adj[-2,0] = 0
-    # Adj[1,0] = 0
-    # Adj[5:, 0] = 0
-    # Adj[5:, 1] = 0
+    Adj = np.ones((w,w))
+    Adj[-1,3] = 0
+    Adj[-1,-2] = 0
+    Adj[-5,-6] = 0
+    Adj[-2,-3] = 0
+    Adj[-2,-1] = 0
+    Adj[-2,0] = 0
+    Adj[1,0] = 0
+    Adj[5:,0:2] = 0
+    Adj[0,1:3] = 0
+    Adj[1:5, 0] = 0
 
     return Adj
 
@@ -73,40 +77,25 @@ def pi_iterative_sparse(Pss, d, z, alpha):
 
     return pn
 
-def binary_encoding(integer, digits):
-    encoded = bin(integer)[2:]
-    while len(encoded)<digits:
-        encoded = '0' + encoded
-    return encoded
-
-def create_candidate_matrix(binary_integer):
-    return np.array([int(s) for s in binary_integer])
-
-def get_candidate_matrices(nb_rows, nb_columns):
-    nb_candidates = 2**(nb_rows*nb_columns)
-    candidate_matrices = np.zeros((nb_candidates, nb_rows, nb_columns))
-    digits = nb_rows*nb_columns
-    for i in range(nb_candidates):
-        candidate_matrices[i, :, :] = create_candidate_matrix(binary_encoding(i, digits)).reshape((nb_rows, nb_columns))
-    return candidate_matrices
 
 def optimizePageRank(n, p=2, m=None):
     if m==None:
         m = n//2
     Adj = create_Adj(n)
     Adj[0:p, m+1:] = 0
-    candidate_matrices = get_candidate_matrices(p, n-1-m)
+    candidate_matrices = product([0,1], repeat=p*(n-m))
     optimal_matrice = np.zeros((p, n-m))
     optimal_score = -float('inf')
     for matrice in candidate_matrices:
-        Adj[0:2, m+1:] = matrice
+        matrice = np.array(matrice).reshape((p, n-m))
+        Adj[0:2, m:] = matrice
         P, Pss, Pprim, d, z, alpha = google(Adj)
-        pi = pi_iterative(P.T)
+        pi = pi_iterative_sparse(Pss, d, z, alpha)
         score = np.sum([pi[i] for i in range(m)])
         if optimal_score<score:
             optimal_score = score
             optimal_matrice = matrice
-    Adj[0:2, m+1:] = optimal_matrice
+    Adj[0:p, m:] = optimal_matrice
     return Adj
 
 def r(x):
@@ -117,8 +106,17 @@ r_vect = np.vectorize(r)
 def pageRank(P):
     eigen, M = np.linalg.eig(P.T)
     n, _ = P.shape
-    eigenvector = M[:, abs(eigen-1)<0.001]
-    return eigenvector/np.sum(eigenvector)
+    eigenvector = M[:, abs(eigen-1)<0.01]
+    return (eigenvector.T)/np.sum(eigenvector)
+
+
+def graph_Adj(Adj):
+    plt.figure()
+    G = nx.from_numpy_matrix(Adj)
+    G.edges(data=True)
+    P, _, _, _, _, alpha = google(Adj)
+    nx.draw_networkx(G, node_size=pageRank(P)*4000)
+    plt.show()
 
 def ergodique_markov(P):
     s = 0.
@@ -179,7 +177,6 @@ def solve_linear_system(P):
     return np.linalg.solve(A, b)
 
 
-
 if __name__=='__main__':
     # print(google(Adj))
     # print(pi_iterative(Pprim))
@@ -188,6 +185,7 @@ if __name__=='__main__':
     # print(solve_linear_system(P))
     # print(trajectory(P, 100))
     # print(ergodique_markov_T(100, P, 1000))
-    # print(optimizePageRank(10))
+
     print(pageRank(P))
-    # print(optimizePageRank(10))
+    print(optimizePageRank(10))
+    graph_Adj(Adj)
